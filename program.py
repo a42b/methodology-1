@@ -1,4 +1,5 @@
 import re
+import sys
 
 def convert_markdown_to_html(markdown):
     def convert_bold(match):
@@ -25,3 +26,21 @@ def convert_markdown_to_html(markdown):
         html_paragraphs.append('<p>' + paragraph.replace('\n', ' ') + '</p>')
     
     return '\n'.join(html_paragraphs)
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python app.py /path/to/markdown", file=sys.stderr)
+        sys.exit(1)
+    
+    input_path = sys.argv[1]
+    
+    try:
+        with open(input_path, 'r', encoding='utf-8') as file:
+            markdown_content = file.read()
+        
+        html_content = convert_markdown_to_html(markdown_content)
+        print(html_content)
+    
+    except Exception as e:
+        print(str(e), file=sys.stderr)
+        sys.exit(1)
