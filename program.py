@@ -16,6 +16,9 @@ def convert_markdown_to_html(markdown):
     def convert_monospaced(match):
         return "<tt>" + match.group(1) + "</tt>"
     
+    def convert_strikethrough(match):
+        return "<s>" + match.group(1) + "</s>"
+    
     # Check for unclosed tags in the text
     def check_unclosed_tags(text):
         if re.search(r'(\*\*[^*]+$|_[^_]+$|`[^`]+$)', text):
@@ -32,6 +35,7 @@ def convert_markdown_to_html(markdown):
         paragraph = re.sub(r'\*\*([^*]+)\*\*', convert_bold, paragraph)
         paragraph = re.sub(r'_([^_]+)_', convert_italic, paragraph)
         paragraph = re.sub(r'`([^`]+)`', convert_monospaced, paragraph)
+        paragraph = re.sub(r'~~([^~]+)~~', convert_strikethrough, paragraph)
         
         html_paragraphs.append('<p>' + paragraph.replace('\n', ' ') + '</p>')
     
