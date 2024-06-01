@@ -28,18 +28,27 @@ def convert_markdown_to_html(markdown):
     return '\n'.join(html_paragraphs)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python app.py /path/to/markdown", file=sys.stderr)
+    if len(sys.argv) < 2:
+        print("Usage: python app.py /path/to/markdown [--out /path/to/output.html]", file=sys.stderr)
         sys.exit(1)
     
     input_path = sys.argv[1]
+    output_path = None
+    
+    if len(sys.argv) == 4 and sys.argv[2] == "--out":
+        output_path = sys.argv[3]
     
     try:
         with open(input_path, 'r', encoding='utf-8') as file:
             markdown_content = file.read()
         
         html_content = convert_markdown_to_html(markdown_content)
-        print(html_content)
+        
+        if output_path:
+            with open(output_path, 'w', encoding='utf-8') as file:
+                file.write(html_content)
+        else:
+            print(html_content)
     
     except Exception as e:
         print(str(e), file=sys.stderr)
