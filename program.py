@@ -1,71 +1,70 @@
-import re
+import argparse
 import sys
-import os
 
-def convert_markdown_to_html(markdown):
-    # Helper functions to convert markdown to HTML
-    def convert_preformatted(match):
-        return "<pre>\n" + match.group(1) + "\n</pre>"
-    
-    def convert_bold(match):
-        return "<b>" + match.group(1) + "</b>"
-    
-    def convert_italic(match):
-        return "<i>" + match.group(1) + "</i>"
-    
-    def convert_monospaced(match):
-        return "<tt>" + match.group(1) + "</tt>"
-    
-    # Check for unclosed tags in the text
-    def check_unclosed_tags(text):
-        if re.search(r'(\*\*[^*]+$|_[^_]+$|`[^`]+$)', text):
-            raise ValueError("Error: invalid markdown - unclosed tag detected")
+# ANSI Escape Codes
+ANSI_RESET = "\u001b[0m"
+ANSI_INVERSE = "\u001b[7m"
 
-    # Split text into paragraphs
-    paragraphs = markdown.strip().split('\n\n')
-    html_paragraphs = []
-    
-    for paragraph in paragraphs:
-        check_unclosed_tags(paragraph)
-        
-        paragraph = re.sub(r'```([^`]*)```', convert_preformatted, paragraph)
-        paragraph = re.sub(r'\*\*([^*]+)\*\*', convert_bold, paragraph)
-        paragraph = re.sub(r'_([^_]+)_', convert_italic, paragraph)
-        paragraph = re.sub(r'`([^`]+)`', convert_monospaced, paragraph)
-        
-        html_paragraphs.append('<p>' + paragraph.replace('\n', ' ') + '</p>')
-    
-    return '\n'.join(html_paragraphs)
+# HTML Formatting
+HTML_TEMPLATE = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatted Output</title>
+    <style>
+        body {{
+            font-family: monospace;
+            white-space: pre;
+            background-color: black;
+            color: white;
+        }}
+        .inverse {{
+            background-color: white;
+            color: black;
+        }}
+    </style>
+</head>
+<body>
+    <div class="inverse">
+{content}
+    </div>
+</body>
+</html>
+"""
 
-def main(input_path, output_path=None):
-    try:
-        if not os.path.isfile(input_path):
-            raise FileNotFoundError(f"Error: file '{input_path}' not found")
+def format_console(text):
+    """Formats text with ANSI escape codes for console output."""
+    return f"{ANSI_INVERSE}{text}{ANSI_RESET}"
 
-        with open(input_path, 'r', encoding='utf-8') as file:
-            markdown_content = file.read()
-        
-        html_content = convert_markdown_to_html(markdown_content)
-        
-        if output_path:
-            with open(output_path, 'w', encoding='utf-8') as file:
-                file.write(html_content)
+def format_html(text):
+    """Formats text in an HTML template for file output."""
+    return HTML_TEMPLATE.format(content=text)
+
+def main():
+    parser = argparse.ArgumentParser(description="Process some text.")
+    parser.add_argument("--format", choices=["console", "html"], help="Specify the output format.")
+    parser.add_argument("output", help="Specify the output file or 'stdout' for console output.")
+    args = parser.parse_args()
+
+    # Example text to be formatted
+    text = "This is a sample formatted text."
+
+    if args.format == "console" or (args.format is None and args.output == "stdout"):
+        formatted_text = format_console(text)
+        if args.output == "stdout":
+            print(formatted_text)
         else:
-            print(html_content)
-    
-    except Exception as e:
-        print(str(e), file=sys.stderr)
-        sys.exit(1)
+            with open(args.output, "w") as file:
+                file.write(formatted_text)
+    elif args.format == "html" or (args.format is None and args.output != "stdout"):
+        formatted_text = format_html(text)
+        with open(args.output, "w") as file:
+            file.write(formatted_text)
+    else:
+        print("Invalid format or output option. Use --help for more information.", file=sys.stderr)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python app.py /path/to/markdown [--out /path/to/output.html]", file=sys.stderr)
-        sys.exit(1)
-    
-    input_path = sys.argv[1]
-    output_path = None
-    
-    if len(sys.argv) == 4 and sys.argv[2] == "--out":
-        output_path = sys.argv[3]
-    
-    main(input_path, output_path)
+    main()
+
