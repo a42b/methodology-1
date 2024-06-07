@@ -1,4 +1,4 @@
-# methodology lab 1 
+# methodology lab 2
 # Markdown to HTML Converter
 
 ## Description
