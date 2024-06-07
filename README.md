@@ -54,7 +54,7 @@ The application outputs the corresponding HTML. By default, the output is printe
 ## Error Handling
 If the Markdown file is invalid (e.g., unclosed tags or unsupported syntax), the application will output an error message to stderr and exit with a non-zero status code.
 
-## Unit tests failed
-
+## Tests failed
+https://github.com/a42b/methodology-1/commit/9c3760ef82164980be0aa003d7faf93ace7e0701
 ## Conclusion
 Unit-тести дійсно допомогли виявити помилки в коді, зокрема розбіжності у форматуванні HTML-шаблону. Це дозволило оперативно внести необхідні зміни та забезпечити правильну роботу програми. Хоча написання тестів і налаштування CI вимагало додаткового часу, цей процес значно підвищив надійність і якість коду. Завдяки тестам вдалося автоматизувати перевірку функціоналу і впевнитися в коректності роботи програмного забезпечення після внесення змін.
