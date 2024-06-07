@@ -42,32 +42,29 @@ def format_html(text):
     """Formats text in an HTML template for file output."""
     return HTML_TEMPLATE.format(content=text)
 
-def main_logic():
-    """Placeholder for the main function logic."""
-    return "This is a sample formatted text."
-
-def process_text(format, output):
-    text = main_logic()
-    if format == "console" or (format is None and output == "stdout"):
-        formatted_text = format_console(text)
-        if output == "stdout":
-            print(formatted_text)
-        else:
-            with open(output, "w") as file:
-                file.write(formatted_text)
-    elif format == "html" or (format is None and output != "stdout"):
-        formatted_text = format_html(text)
-        with open(output, "w") as file:
-            file.write(formatted_text)
-    else:
-        print("Invalid format or output option. Use --help for more information.", file=sys.stderr)
-
 def main():
     parser = argparse.ArgumentParser(description="Process some text.")
     parser.add_argument("--format", choices=["console", "html"], help="Specify the output format.")
     parser.add_argument("output", help="Specify the output file or 'stdout' for console output.")
     args = parser.parse_args()
-    process_text(args.format, args.output)
+
+    # Example text to be formatted
+    text = "This is a sample formatted text."
+
+    if args.format == "console" or (args.format is None and args.output == "stdout"):
+        formatted_text = format_console(text)
+        if args.output == "stdout":
+            print(formatted_text)
+        else:
+            with open(args.output, "w") as file:
+                file.write(formatted_text)
+    elif args.format == "html" or (args.format is None and args.output != "stdout"):
+        formatted_text = format_html(text)
+        with open(args.output, "w") as file:
+            file.write(formatted_text)
+    else:
+        print("Invalid format or output option. Use --help for more information.", file=sys.stderr)
 
 if __name__ == "__main__":
     main()
+
