@@ -18,16 +18,16 @@ class TestProgram(unittest.TestCase):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formatted Output</title>
     <style>
-        body {{
+        body {
             font-family: monospace;
             white-space: pre;
             background-color: black;
             color: white;
-        }}
-        .inverse {{
+        }
+        .inverse {
             background-color: white;
             color: black;
-        }}
+        }
     </style>
 </head>
 <body>
